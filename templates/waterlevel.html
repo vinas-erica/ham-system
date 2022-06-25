@@ -10,11 +10,11 @@
                 </div>
                 <div class="flex-1 text-right md:text-center">
                     <h2 class="font-bold uppercase text-gray-600">Water Level</h2>
-                    <p class="font-bold text-3xl">70</p>
+                    <p class="font-bold text-3xl">{{WaterLevel}}</p>
                 </div>
             </div>
         </div>
-        <div class="p-5">
+        <!-- <div class="p-5">
             <canvas id="chartjs-4" class="chartjs" width="undefined" height="undefined"></canvas>
             <script>
                 new Chart(document.getElementById("chartjs-4"), {
@@ -32,7 +32,95 @@
                     "options": {}
                 });
             </script>
+        </div> -->
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <canvas id="chartjs-4" class="chartjs" width="undefined" height="undefined"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
+        <!--suppress JSUnresolvedLibraryURL -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
+                integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ=="
+                crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <!--suppress JSUnresolvedLibraryURL -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.1/js/bootstrap.bundle.min.js"
+                integrity="sha512-mULnawDVcCnsk9a4aG1QLZZ6rcce/jSzEGqUkeOLy0b6q0+T6syHrxlsAGH7ZVoqC93Pd0lBqd6WguPWih7VHA=="
+                crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <!--suppress JSUnresolvedLibraryURL -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"
+                integrity="sha512-d9xgZrVZpmmQlfonhQUvTR7lMPtO7NkZMkA0ABN3PHCbKA5nqylQ/yWlFAyY6hYgdF1Qh6nYiuADWwKB4C2WSw=="
+                crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script>
+            $(document).ready(function () {
+                const config = {
+                    type: 'line',
+                    data: {
+                        labels: Array(30).fill("00:00:00"),
+                        datasets: [{
+                            label: "Views",
+                            backgroundColor: 'rgb(75, 192, 192)',
+                            borderColor: 'rgb(75, 192, 192)',
+                            data: Array(30).fill(null),
+                            fill: false,
+                        }],
+                    },
+                    options: {
+                        responsive: true,
+                        title: {
+                            display: true,
+                            text: ''
+                        },
+                        tooltips: {
+                            mode: 'index',
+                            intersect: false,
+                        },
+                        hover: {
+                            mode: 'nearest',
+                            intersect: true
+                        },
+                        scales: {
+                            xAxes: [{
+                                display: true,
+                                scaleLabel: {
+                                    display: true,
+                                    labelString: 'Time'
+                                }
+                            }],
+                            yAxes: [{
+                                display: true,
+                                scaleLabel: {
+                                    display: true,
+                                    labelString: 'Value'
+                                }
+                            }]
+                        }
+                    }
+                };
+        
+                const context = document.getElementById('chartjs-4').getContext('2d');
+        
+                const lineChart = new Chart(context, config);
+        
+                const source = new EventSource("/chart-data");
+        
+                source.onmessage = function (event) {
+                    const data = JSON.parse(event.data);
+                    if (config.data.labels.length === 30) {
+                        config.data.labels.shift();
+                        config.data.datasets[0].data.shift();
+                    }
+                    config.data.labels.push(data.time);
+                    config.data.datasets[0].data.push(data.value);
+                    lineChart.update();
+                }
+            });
+        </script>
     </div>
     <!--/Graph Card-->
 </div>
