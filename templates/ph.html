@@ -113,9 +113,20 @@
                         config.data.labels.shift();
                         config.data.datasets[0].data.shift();
                     }
-                    config.data.labels.push(data.time);
-                    config.data.datasets[0].data.push(data.value);
-                    lineChart.update();
+                    if(data.time <= 12){
+                        config.data.labels.push(data.time+" AM");
+                        config.data.datasets[0].data.push(data.value);
+                        lineChart.update();
+                    }
+                    else{
+                        let newTime = data.time
+                        newTime = newTime.split(":")
+                        newTime[0]=newTime[0]-12
+                        console.log(newTime[0]-12)
+                        config.data.labels.push(newTime[0]+":"+newTime[1]+":"+newTime[2]+" PM");
+                        config.data.datasets[0].data.push(data.value);
+                        lineChart.update();
+                    }
                 }
             });
         </script>

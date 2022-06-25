@@ -39,7 +39,7 @@ async def generate_random_data(request: Request) -> Iterator[str]:
         json_data = json.dumps(
             {
                 "time": datetime.now().strftime("%H:%M:%S"),
-                "value": random.random() * 90,
+                "value": random.random() * 100,
             }
         )
         yield f"data:{json_data}\n\n"

@@ -107,16 +107,35 @@
                 const lineChart = new Chart(context, config);
         
                 const source = new EventSource("/chart-data");
-        
+                
+                let now = new Date();
+
+                new Intl.DateTimeFormat('default',
+                    {
+                        hour12: true,
+                        hour: 'numeric',
+                        minute: 'numeric'
+                    }).format(now);
                 source.onmessage = function (event) {
                     const data = JSON.parse(event.data);
                     if (config.data.labels.length === 30) {
                         config.data.labels.shift();
                         config.data.datasets[0].data.shift();
                     }
-                    config.data.labels.push(data.time);
-                    config.data.datasets[0].data.push(data.value);
-                    lineChart.update();
+                    if(data.time <= 12){
+                        config.data.labels.push(data.time+" AM");
+                        config.data.datasets[0].data.push(data.value);
+                        lineChart.update();
+                    }
+                    else{
+                        let newTime = data.time
+                        newTime = newTime.split(":")
+                        newTime[0]=newTime[0]-12
+                        console.log(newTime[0]-12)
+                        config.data.labels.push(newTime[0]+":"+newTime[1]+":"+newTime[2]+" PM");
+                        config.data.datasets[0].data.push(data.value);
+                        lineChart.update();
+                    }
                 }
             });
         </script>
