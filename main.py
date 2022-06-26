@@ -46,7 +46,42 @@ async def generate_random_data(request: Request) -> Iterator[str]:
         await asyncio.sleep(1)
 
 
-@app.get("/chart-data", response_class=HTMLResponse)
+@app.get("/chart-data-water-temp", response_class=HTMLResponse)
+async def chart_data(request: Request) -> StreamingResponse:
+    responses = StreamingResponse(generate_random_data(request), media_type="text/event-stream")
+    responses.headers["Cache-Control"] = "no-cache"
+    responses.headers["X-Accel-Buffering"] = "no"
+    return responses
+
+@app.get("/chart-data-water-level", response_class=HTMLResponse)
+async def chart_data(request: Request) -> StreamingResponse:
+    responses = StreamingResponse(generate_random_data(request), media_type="text/event-stream")
+    responses.headers["Cache-Control"] = "no-cache"
+    responses.headers["X-Accel-Buffering"] = "no"
+    return responses
+
+@app.get("/chart-data-temp", response_class=HTMLResponse)
+async def chart_data(request: Request) -> StreamingResponse:
+    responses = StreamingResponse(generate_random_data(request), media_type="text/event-stream")
+    responses.headers["Cache-Control"] = "no-cache"
+    responses.headers["X-Accel-Buffering"] = "no"
+    return responses
+
+@app.get("/chart-data-ph", response_class=HTMLResponse)
+async def chart_data(request: Request) -> StreamingResponse:
+    responses = StreamingResponse(generate_random_data(request), media_type="text/event-stream")
+    responses.headers["Cache-Control"] = "no-cache"
+    responses.headers["X-Accel-Buffering"] = "no"
+    return responses
+
+@app.get("/chart-data-light", response_class=HTMLResponse)
+async def chart_data(request: Request) -> StreamingResponse:
+    responses = StreamingResponse(generate_random_data(request), media_type="text/event-stream")
+    responses.headers["Cache-Control"] = "no-cache"
+    responses.headers["X-Accel-Buffering"] = "no"
+    return responses
+
+@app.get("/chart-data-humidity", response_class=HTMLResponse)
 async def chart_data(request: Request) -> StreamingResponse:
     responses = StreamingResponse(generate_random_data(request), media_type="text/event-stream")
     responses.headers["Cache-Control"] = "no-cache"
