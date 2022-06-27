@@ -60,12 +60,12 @@
                 const config = {
                     type: 'line',
                     data: {
-                        labels: Array(30).fill("00:00:00"),
+                        labels: Array(15).fill("00:00:00"),
                         datasets: [{
                             label: "Views",
                             backgroundColor: 'rgb(75, 192, 192)',
                             borderColor: 'rgb(75, 192, 192)',
-                            data: Array(30).fill(null),
+                            data: Array(15).fill(null),
                             fill: false,
                         }],
                     },
@@ -112,7 +112,7 @@
         
                 source.onmessage = function (event) {
                     const data = JSON.parse(event.data);
-                    if (config.data.labels.length === 30) {
+                    if (config.data.labels.length === 15) {
                         config.data.labels.shift();
                         config.data.datasets[0].data.shift();
                     }
