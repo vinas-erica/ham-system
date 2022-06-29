@@ -10,7 +10,7 @@
                 </div>
                 <div class="flex-1 text-right md:text-center">
                     <h2 class="font-bold uppercase text-gray-600">Water Level</h2>
-                    <p id="waterLevelAverage" class="font-bold text-3xl">{{average}}</p>
+                    <p id="waterLevelData" class="font-bold text-3xl">{{waterLevelData}}</p>
                 </div>
             </div>
         </div>
@@ -102,8 +102,7 @@
                         }
                     }
                 };
-                wlsum = 0
-                const wlnum = Array(15).fill(0)
+                wldata = []
                 wlx = 0
                 const context = document.getElementById('chartjs-4').getContext('2d');
         
@@ -118,54 +117,42 @@
                         config.data.datasets[0].data.shift();
                     }
                     let newTime = data.time
-                    newTime = newTime.split(":")
-                    // console.log("Value", data.value)
-                    // console.log('Time',data.time)
+                    newTime = newTime.split(":")//spliting the time into 3 parts
+
                     if(data.time <= 12 || newTime[0] <= 0 || newTime[0] < 12){
                         newTime[0]=newTime[0]-12
                         
                         if (newTime[0] == -12){
-                            config.data.labels.push(12+":"+newTime[1]+":"+newTime[2]+" AM");   
+                            time = 12+":"+newTime[1]+":"+newTime[2]+" AM" //12am window time
+                            config.data.labels.push(time);   
                             
                         }
                         else
-                            config.data.labels.push(data.time+" AM");   
-                            // console.log('Morning', newTime[0])                
+                            time = data.time+" AM"          //Past 12am window time
+                            config.data.labels.push(time);   
+
                     }
                     else{
                         if(newTime[0] <= 12){
-                            config.data.labels.push(12+":"+newTime[1]+":"+newTime[2]+" PM");   
-                            // console.log("12PM")
+                            time = 12+":"+newTime[1]+":"+newTime[2]+" PM" //12pm window time
+                            config.data.labels.push(time);   
+
                         }
                         else{
                             newTime[0]=newTime[0]-12
-                            config.data.labels.push(newTime[0]+":"+newTime[1]+":"+newTime[2]+" PM");
-                            // console.log("12PM past")
+                            time = newTime[0]+":"+newTime[1]+":"+newTime[2]+" PM" // past 12pm window time
+                            config.data.labels.push(time);
+
                         }
                     }
                     config.data.datasets[0].data.push(data.value);
                     lineChart.update();
-                    // sum = 0
-                    if (wlnum[14] !=0 || wlnum[0] == undefined){
-                        wlsum = wlsum - wlnum[0]
-                        wlnum.shift()
-                        // console.log("dapat pumasok dito")
-                        wlx=wlx-1
-                    }
-                    // num.shift()
-                    wlnum[wlx] = Math.round(data.value * 100) / 100
-                    wlsum = wlnum[wlx] + wlsum
-                    // console.log("Value: ", num[x])
-                    // console.log("first value: ",num[0])
-                    // console.log("number of X: ", num.length )
-                    // // sum = sum - num[0]
-                    // console.log(x," ",sum)
-                    
-                    // console.log("Average: ", average)
-                    wlaverage = wlsum / 15
+
+                    waterLevelData = (Math.round(data.value * 100) / 100) // transfering the data into array
+                    wldata[wlx] = {data: waterLevelData, time: time} // combining the data and the time
+                    localStorage.setItem("waterLevelData", JSON.stringify(wldata)) //saving it to the localstorage
+                    document.getElementById("waterLevelData").innerHTML = waterLevelData 
                     wlx++
-                    document.getElementById("waterLevelAverage").innerHTML = Math.round(wlaverage * 100) / 100;
-                    // console.log(Math.round(average * 100) / 100)
                 }
             });
         </script>

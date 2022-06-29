@@ -9,7 +9,7 @@
                 </div>
                 <div class="flex-1 text-right md:text-center">
                     <h2 class="font-bold uppercase text-gray-600">Humidity</h2>
-                    <p id="humidityAverage" class="font-bold text-3xl">{{ average }}</p>
+                    <p id="humidityData" class="font-bold text-3xl">{{ humidityData }}</p>
                 </div>
             </div>
         </div>
@@ -60,7 +60,7 @@
                 const config = {
                     type: 'line',
                     data: {
-                        labels: Array(15).fill("00:00:00"),
+                        labels: Array(15).fill("00:00:00"), 
                         datasets: [{
                             label: "Views",
                             backgroundColor: 'rgb(75, 192, 192)',
@@ -101,9 +101,9 @@
                         }
                     }
                 };
-                hsum = 0
-                const hnum = Array(15).fill(0)
-                hx = 0
+
+                hx=0
+                hdata=[]
                 const context = document.getElementById('chartjs-1').getContext('2d');
         
                 const lineChart = new Chart(context, config);
@@ -117,54 +117,43 @@
                         config.data.datasets[0].data.shift();
                     }
                     let newTime = data.time
-                    newTime = newTime.split(":")
-                    // console.log("Value", data.value)
-                    // console.log('Time',data.time)
+                    newTime = newTime.split(":")//spliting the time into 3 parts
+
                     if(data.time <= 12 || newTime[0] <= 0 || newTime[0] < 12){
                         newTime[0]=newTime[0]-12
                         
                         if (newTime[0] == -12){
-                            config.data.labels.push(12+":"+newTime[1]+":"+newTime[2]+" AM");   
+                            time = 12+":"+newTime[1]+":"+newTime[2]+" AM" //12am window time
+                            config.data.labels.push(time);   
                             
                         }
                         else
-                            config.data.labels.push(data.time+" AM");   
-                            // console.log('Morning', newTime[0])                
+                            time = data.time+" AM"          //Past 12am window time
+                            config.data.labels.push(time);   
+           
                     }
                     else{
                         if(newTime[0] <= 12){
-                            config.data.labels.push(12+":"+newTime[1]+":"+newTime[2]+" PM");   
-                            // console.log("12PM")
+                            time = 12+":"+newTime[1]+":"+newTime[2]+" PM" //12pm window time
+                            config.data.labels.push(time);   
+
                         }
                         else{
                             newTime[0]=newTime[0]-12
-                            config.data.labels.push(newTime[0]+":"+newTime[1]+":"+newTime[2]+" PM");
-                            // console.log("12PM past")
+                            time = newTime[0]+":"+newTime[1]+":"+newTime[2]+" PM" // past 12pm window time
+                            config.data.labels.push(time);
+
                         }
                     }
                     config.data.datasets[0].data.push(data.value);
                     lineChart.update();
-                    // sum = 0
-                    if (hnum[14] !=0 || hnum[0] == undefined){
-                        hsum = hsum - hnum[0]
-                        hnum.shift()
-                        // console.log("dapat pumasok dito")
-                        hx=hx-1
-                    }
-                    // num.shift()
-                    hnum[hx] = Math.round(data.value * 100) / 100
-                    hsum = hnum[hx] + hsum
-                    // console.log("Value: ", num[x])
-                    // console.log("first value: ",num[0])
-                    // console.log("number of X: ", num.length )
-                    // // sum = sum - num[0]
-                    // console.log(x," ",sum)
-                    
-                    // console.log("Average: ", average)
-                    haverage = hsum / 15
+
+                    humidityData = (Math.round(data.value * 100) / 100) // transfering the data into array
+                    hdata[hx] = {data: humidityData, time: time} // combining the data and the time
+                    localStorage.setItem("HumidityData", JSON.stringify(hdata)) //saving it to the localstorage
+                    document.getElementById("humidityData").innerHTML = humidityData 
                     hx++
-                    document.getElementById("humidityAverage").innerHTML = Math.round(haverage * 100) / 100;
-                    // console.log(Math.round(average * 100) / 100)
+
                 }
             });
         </script>
